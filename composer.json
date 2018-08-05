@@ -1,0 +1,44 @@
+{
+    "name" : "tankertrackers/browser",
+    "description" : "Generates a random, usable, User Agent string based on statistics.",
+    "version" : "0.0.1",
+    "type" : "library",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "Breki Tomasson",
+            "email" : "breki.tomasson@gmail.com"
+        }
+    ],
+    "extra" : {
+        "laravel" : {
+            "providers" : [
+                "TankerTrackers\\Browser\\BrowserServiceProvider"
+            ],
+            "aliases" : {
+                "Browser" : "TankerTrackers\\Browser\\BrowserFacade"
+            }
+        }
+    },
+    "autoload" : {
+        "psr-4" : {
+            "TankerTrackers\\Browser\\" : "src/"
+        }
+    },
+    "minimum-stability" : "beta",
+    "config" : {
+        "sort-packages" : true,
+        "optimize-autoloader" : true,
+        "discard-changes" : true
+    },
+    "require" : {
+        "php" : ">=7.1.0",
+        "illuminate/contracts" : "~5.6",
+        "illuminate/support" : "~5.6"
+    },
+    "scripts" : {
+        "post-autoload-dump" : [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
+        ]
+    }
+}
