@@ -2,6 +2,7 @@
 
     use Illuminate\Foundation\AliasLoader;
     use Illuminate\Support\ServiceProvider;
+    use TankerTrackers\Browser\Browser;
 
     /**
      * Class BrowserServiceProvider
@@ -11,7 +12,11 @@
     class BrowserServiceProvider extends ServiceProvider {
 
         protected $browserProviders = [
-            'Browser' => 'TankerTrackers\Browser\Browser'
+            'Browser' => Browser::class
+        ];
+
+        protected $browserAliases = [
+            'Browser' => BrowserFacade::class
         ];
 
         public function register () : void
