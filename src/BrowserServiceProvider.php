@@ -1,8 +1,8 @@
-<?php namespace TankerTrackers\Browser {
+<?php /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+namespace TankerTrackers\Browser {
 
     use Illuminate\Foundation\AliasLoader;
     use Illuminate\Support\ServiceProvider;
-    use TankerTrackers\Browser\Browser;
 
     /**
      * Class BrowserServiceProvider
@@ -12,11 +12,11 @@
     class BrowserServiceProvider extends ServiceProvider {
 
         protected $browserProviders = [
-            'Browser' => Browser::class
+            'Browser' => \TankerTrackers\Browser\Browser::class
         ];
 
         protected $browserAliases = [
-            'Browser' => BrowserFacade::class
+            'Browser' => \TankerTrackers\Browser\BrowserFacade::class
         ];
 
         public function register () : void

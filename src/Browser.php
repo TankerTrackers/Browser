@@ -7,29 +7,60 @@
      */
     class Browser {
 
-        // These are the percentages of people using each of the below browsers, multiplied by
-        // 100 to get an integer. These numbers are used as the basis of generating the
-        // statistically most likely user agent.
         public static $singleton = null;
-        public $userAgent;
+
+        public $userAgentString = [
+            'browser'         => 'Mozilla',
+            'version'         => '5.0',
+            'systeminfo'      => null,
+            'platform'        => null,
+            'platformdetails' => null,
+            'extensions'      => null
+        ];
+
+        /**
+         * These are the percentages of people using each of the below browsers, multiplied by
+         * 100 to get an integer. These numbers are used as the basis of generating the
+         * statistically most likely user agent.
+         * */
         protected $browserStatistics = [
-            'chrome'    => 6472,
-            'edge'      => 418,
-            'firefox'   => 1221,
+            'chrome'    => 5894,
+            'edge'      => 189,
+            'aosp'      => 156,
+            'firefox'   => 517,
+            'opera'     => 350,
+            'samsung'   => 267,
             'iexplorer' => 771,
-            'safari'    => 629
+            'safari'    => 1370,
+            'uc'        => 746,
+        ];
+
+        protected $chromePlatforms = [
+            'Windows NT 10.0; Win64; x64'       => 1960,
+            'Windows NT 6.1; Win64; x64'        => 590,
+            'Macintosh; Intel Mac OS X 10_13_5' => 370,
+            'Macintosh; Intel Mac OS X 10_13_6' => 360,
+            'Macintosh; Intel Mac OS X 10_12_6' => 210,
+            'Windows NT 6.3; Win64; x64'        => 140,
+            'Macintosh; Intel Mac OS X 10_13_4' => 140,
+            'Windows NT 10.0; Win64; x64'       => 120,
+            'Windows NT 6.1'                    => 110,
+            'Macintosh; Intel Mac OS X 10_11_6' => 80,
+            'Windows NT 10.0; Win64; x64'       => 70,
         ];
 
         /**
          * This function starts us over from null.
+         *
+         * @throws \Exception
          */
-        public static function regenerate ()
+        public static function regenerate (array $lang = ['en-US'])
         {
             if (self::$singleton) {
                 self::$singleton = null;
             }
 
-            return self::generate();
+            return self::get($lang);
         }
 
         /**
@@ -41,17 +72,29 @@
          * @return mixed
          * @throws \Exception
          */
-        public static function get (array $lang = ['en-US'])
+        public static function get (array $options = [])
         {
             if (self::$singleton === null) {
                 self::$singleton = new self;
             } else {
-                return self::$singleton->userAgent;
+                return self::$singleton->userAgentString;
             }
 
-            self::$singleton->userAgent['browser'] = self::$singleton->pickRandomBrowser();
+            self::parseOptions($options);
 
-            return self::$singleton->userAgent;
+            self::$singleton->userAgentString['browser'] = self::$singleton->pickRandomBrowser();
+
+            echo self::$singleton::generateString();
+
+            return self::$singleton->userAgentString;
+        }
+
+        /**
+         * @param $options
+         */
+        protected static function parseOptions ($options)
+        {
+
         }
 
         /**
@@ -60,10 +103,7 @@
          */
         protected function pickRandomBrowser ()
         {
-            $sumOfWeights = self::sumWeights(self::$singleton->browserStatistics);
-            $result       = self::roll($sumOfWeights, self::$singleton->browserStatistics);
-
-            return $result;
+            return $this->roll($this->browserStatistics);
         }
 
         /**
@@ -88,18 +128,38 @@
          * @return int|string
          * @throws \Exception
          */
-        protected function roll (int $sum, array $array)
+        protected function roll (array $array)
         {
+            arsort($array);
+            $sum             = $this->sumWeights($array);
             $iteration       = 0;
             $randomSelection = random_int(0, $sum);
+
+            reset($array); // Just in case.
 
             foreach ($array as $name => $weight) {
                 $iteration += $weight;
                 if ($randomSelection < $iteration) {
                     return $name;
                 }
-
             }
+        }
+
+        public static function generateString ()
+        {
+            $string = self::$singleton->userAgentString;
+
+            return "{$string['browser']}/{$string['version']}";
+        }
+
+        // === Browsers and their peculiarities === //
+
+        /**
+         * @return string
+         */
+        protected function chromeVersion () : string
+        {
+            return \random_int(60, 68) . '.0.' . \random_int(800, 899) . '.' . \random_int(1, 200);
         }
     }
 
